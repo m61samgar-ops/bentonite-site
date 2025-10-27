@@ -1,8 +1,7 @@
 import type { ReactNode } from "react";
 import { notFound } from "next/navigation";
 import { NextIntlClientProvider } from "next-intl";
-import { unstable_setRequestLocale } from "next-intl/server"; // برای SSG/SSR
-
+import { setRequestLocale } from "next-intl/server";
 // تمام لوکال‌هایی که سایتت دارد
 export const LOCALES = [
   "fa","en","ru","es","fr","de","tr","ar","zh","ja","ko",
@@ -25,7 +24,7 @@ export default async function LocaleLayout({
   if (!LOCALES.includes(locale as any)) notFound();
 
   // به next-intl بگو این درخواست با چه localeای است
-  unstable_setRequestLocale(locale);
+setRequestLocale(locale);
 
   // پیام‌های مترجم (json) را لود کن
   const messages = (await import(`../../messages/${locale}.json`)).default;
