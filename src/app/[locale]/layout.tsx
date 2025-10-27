@@ -2,7 +2,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { NextIntlClientProvider } from "next-intl";
-import { getMessages, unstable_setRequestLocale } from "next-intl/server";
+import { getMessages, setRequestLocale } from "next-intl/server";
 import "../globals.css";
 import { locales, getDir, type Locale } from "@/i18n";
 
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     "رعد و برق مهراب — تولیدکننده تخصصی بنتونیت مهندسی برای صنعت برق.",
 };
 
-// نکته مهم: layout نباید async باشد
+// نکته مهم: layout باید synchronous باشد (بدون async)
 export default function LocaleLayout({
   children,
   params,
@@ -32,13 +32,13 @@ export default function LocaleLayout({
 
   if (!locales.includes(locale)) notFound();
 
-  // تنظیم locale روی ریکوئست (next-intl v3)
-  unstable_setRequestLocale(locale);
+  // next-intl v3: ثبت زبان برای این ریکوئست
+  setRequestLocale(locale);
 
   return (
     <html lang={locale} dir={getDir(locale)}>
       <body className="font-fa bg-slate-50">
-        {/* Server Component داخلی که async است: پیام‌ها را می‌گیرد */}
+        {/* Server Component async برای گرفتن پیام‌ها */}
         {/* @ts-expect-error Async Server Component */}
         <LocaleProvider locale={locale}>{children}</LocaleProvider>
       </body>
@@ -46,7 +46,7 @@ export default function LocaleLayout({
   );
 }
 
-// — Server Component async برای گرفتن پیام‌ها — //
+// — Server Component async برای گرفتن پیام‌های ترجمه — //
 async function LocaleProvider({
   locale,
   children,
