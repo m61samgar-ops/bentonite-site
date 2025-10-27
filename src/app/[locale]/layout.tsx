@@ -1,42 +1,41 @@
-// src/app/[locale]/layout.tsx
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import { NextIntlClientProvider } from "next-intl";
-import { getMessages, setRequestLocale } from "next-intl/server";
+import { getMessages } from "next-intl/server";
 import "../globals.css";
+import { locales, getDir, Locale } from "@/i18n";
 
-// زبان‌های سایت
-export const LOCALES = [
-  "fa", "en", "ru", "es", "fr", "de", "tr", "ar", "zh", "ja", "ko",
-] as const;
-export type Locale = typeof LOCALES[number];
-
-// صفحات استاتیک برای هر زبان
 export function generateStaticParams() {
-  return LOCALES.map((locale) => ({ locale }));
+  return locales.map((locale) => ({ locale }));
 }
 
-// (اختیاری) متادیتای سراسری؛ اگر بخواهی اینجا هم می‌توان گذاشت
 export const metadata: Metadata = {
-  title: { default: "رعد و برق مهراب", template: "%s | رعد و برق مهراب" },
+  title: {
+    default: "رعد و برق مهراب | تولیدکننده بنتونیت صنعت برق",
+    template: "%s | رعد و برق مهراب"
+  },
+  description:
+    "رعد و برق مهراب — تولیدکننده تخصصی بنتونیت مهندسی برای صنعت برق."
 };
 
-export default async function LocaleLayout({
-  children,
-  params: { locale },
-}: {
+interface LayoutProps {
   children: React.ReactNode;
   params: { locale: Locale };
-}) {
-  // برای next-intl v3
-  setRequestLocale(locale);
+}
 
-  const messages = await getMessages();
-  const dir = locale === "fa" || locale === "ar" ? "rtl" : "ltr";
+export default async function Layout({ children, params }: LayoutProps) {
+  const { locale } = params;
+
+  if (!locales.includes(locale)) {
+    notFound();
+  }
+
+  const messages = await getMessages({ locale });
 
   return (
-    <html lang={locale} dir={dir}>
-      <body>
-        <NextIntlClientProvider messages={messages}>
+    <html lang={locale} dir={getDir(locale)}>
+      <body className="font-fa bg-slate-50">
+        <NextIntlClientProvider messages={messages} locale={locale}>
           {children}
         </NextIntlClientProvider>
       </body>
