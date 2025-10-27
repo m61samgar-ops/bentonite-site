@@ -1,0 +1,9 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "nextjs",
+  "buildCommand": "next build",
+  "outputDirectory": ".next",
+  "functions": {
+    "app/**/*.rsc": { "memory": 1024, "maxDuration": 60 }
+  }
+}
