@@ -2,7 +2,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { NextIntlClientProvider } from "next-intl";
-import { getMessages } from "next-intl/server";
+import { getMessages, setRequestLocale } from "next-intl/server";
 import "../globals.css";
 import { locales, getDir, Locale } from "@/i18n";
 
@@ -29,7 +29,11 @@ export default async function LocaleLayout({
   const locale = params.locale as Locale;
   if (!locales.includes(locale)) notFound();
 
-  const messages = await getMessages({ locale });
+  // برای next-intl v3: ابتدا locale را روی ریکوئست ست کن
+  setRequestLocale(locale);
+
+  // سپس پیام‌ها را بدون پارامتر بگیر
+  const messages = await getMessages();
 
   return (
     <html lang={locale} dir={getDir(locale)}>
