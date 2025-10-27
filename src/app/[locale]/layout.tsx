@@ -21,22 +21,20 @@ export const metadata: Metadata = {
     "رعد و برق مهراب — تولیدکننده تخصصی بنتونیت مهندسی برای صنعت برق.",
 };
 
-// (نسخه v4) می‌توانیم layout را async کنیم
+// مهم: برای دور زدن اختلاف تایپ Next 15، امضا را any می‌گذاریم
 export default async function LocaleLayout({
   children,
   params,
-}: {
-  children: React.ReactNode;
-  params: { locale: string };
-}) {
-  const locale = params.locale as Locale;
+}: any) {
+  // در برخی نسخه‌ها params ممکنه Promise باشه
+  const p = await Promise.resolve(params);
+  const locale = (p?.locale || "fa") as Locale;
 
   if (!locales.includes(locale)) notFound();
 
-  // v4
+  // next-intl v4
   setRequestLocale(locale);
 
-  // پیام‌ها را همین‌جا بگیر
   const messages = await getMessages({ locale });
 
   return (
