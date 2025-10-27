@@ -1,47 +1,19 @@
-// src/app/[locale]/layout.tsx
-import type { Metadata } from "next";
-import { notFound } from "next/navigation";
-import { NextIntlClientProvider } from "next-intl";
-import { getMessages, setRequestLocale } from "next-intl/server";
-import "../globals.css";
-import { locales, getDir, Locale } from "@/i18n";
+import type { MetadataRoute } from "next";
 
-export function generateStaticParams() {
-  return locales.map((locale) => ({ locale }));
-}
-
-export const metadata: Metadata = {
-  title: {
-    default: "رعد و برق مهراب | تولیدکننده بنتونیت صنعت برق",
-    template: "%s | رعد و برق مهراب"
-  },
-  description:
-    "رعد و برق مهراب — تولیدکننده تخصصی بنتونیت مهندسی برای صنعت برق."
-};
-
-export default async function LocaleLayout({
-  children,
-  params
-}: {
-  children: React.ReactNode;
-  params: { locale: string };
-}) {
-  const locale = params.locale as Locale;
-  if (!locales.includes(locale)) notFound();
-
-  // برای next-intl v3: ابتدا locale را روی ریکوئست ست کن
-  setRequestLocale(locale);
-
-  // سپس پیام‌ها را بدون پارامتر بگیر
-  const messages = await getMessages();
-
-  return (
-    <html lang={locale} dir={getDir(locale)}>
-      <body className="font-fa bg-slate-50">
-        <NextIntlClientProvider locale={locale} messages={messages}>
-          {children}
-        </NextIntlClientProvider>
-      </body>
-    </html>
-  );
+export default function manifest(): MetadataRoute.Manifest {
+  return {
+    name: "رعد و برق مهراب",
+    short_name: "Mehrab Power",
+    description:
+      "تولیدکننده تخصصی بنتونیت مهندسی برای صنعت برق (Earthing, HV, ...).",
+    start_url: "/",
+    display: "standalone",
+    background_color: "#ffffff",
+    theme_color: "#2563eb",
+    icons: [
+      { src: "/icon.png", sizes: "192x192", type: "image/png" },
+      { src: "/icon.png", sizes: "512x512", type: "image/png" },
+      { src: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" }
+    ]
+  };
 }
