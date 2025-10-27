@@ -1,0 +1,44 @@
+@import "tailwindcss";
+
+/* رنگ‌های پایه برای حالت روشن */
+:root {
+  --background: #ffffff;
+  --foreground: #0f172a; /* slate-900 */
+}
+
+/* تم و فونت‌ها برای Tailwind v4 */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-fa), var(--font-en), ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Apple Color Emoji","Segoe UI Emoji";
+}
+
+/* حالت تیره سیستم */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0b1220; /* نزدیک به graphite */
+    --foreground: #e5e7eb; /* slate-200 */
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  overflow-x: hidden; /* جلوگیری از اسکرول افقی در موبایل */
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  @apply text-slate-800 bg-slate-50;
+}
+
+/* کلاس کمکی برای فونت فارسی */
+.font-fa {
+  font-family: var(--font-fa), var(--font-en), ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+}
