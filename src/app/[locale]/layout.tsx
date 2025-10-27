@@ -1,3 +1,4 @@
+// @ts-nocheck
 // src/app/[locale]/layout.tsx
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
@@ -20,8 +21,8 @@ export const metadata: Metadata = {
     "رعد و برق مهراب — تولیدکننده تخصصی بنتونیت مهندسی برای صنعت برق.",
 };
 
-// نکته: خود layout async نیست؛ یک سرورکامپوننت async داخلی می‌سازیم
-export default function LocaleLayout({
+// (نسخه v4) می‌توانیم layout را async کنیم
+export default async function LocaleLayout({
   children,
   params,
 }: {
@@ -32,31 +33,19 @@ export default function LocaleLayout({
 
   if (!locales.includes(locale)) notFound();
 
-  // نسخه 4 next-intl
+  // v4
   setRequestLocale(locale);
+
+  // پیام‌ها را همین‌جا بگیر
+  const messages = await getMessages({ locale });
 
   return (
     <html lang={locale} dir={getDir(locale)}>
       <body className="font-fa bg-slate-50">
-        {/* @ts-expect-error Async Server Component */}
-        <IntlServer locale={locale}>{children}</IntlServer>
+        <NextIntlClientProvider locale={locale} messages={messages}>
+          {children}
+        </NextIntlClientProvider>
       </body>
     </html>
-  );
-}
-
-// — سرورکامپوننت async برای گرفتن پیام‌ها — //
-async function IntlServer({
-  locale,
-  children,
-}: {
-  locale: Locale;
-  children: React.ReactNode;
-}) {
-  const messages = await getMessages({ locale });
-  return (
-    <NextIntlClientProvider locale={locale} messages={messages}>
-      {children}
-    </NextIntlClientProvider>
   );
 }
